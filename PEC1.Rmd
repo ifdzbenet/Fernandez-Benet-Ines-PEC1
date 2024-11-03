@@ -1,0 +1,7 @@
+---
+title: "PEC1"
+author: "Inés Elena Fernández Benet"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
