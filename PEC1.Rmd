@@ -5,3 +5,47 @@ date: "`r Sys.Date()`"
 output: pdf_document
 ---
 
+Comenzamos el análisis abriendo los datos. Hemos escogido el dataset sobre 1,1,1-trichloro-2,2-bis(4-hydroxyphenyl)ethane (C14H11Cl3O2).
+
+```{r}
+
+datos <- read.csv("human_cachexia.csv")
+head(datos)
+
+```
+
+Ahora creamos el contenedor SummarizedExperiment para contener los datos escogidos
+
+```{r}
+
+library(SummarizedExperiment)
+
+# Separar los datos de metabolitos y los metadatos
+counts <- as.matrix(t(datos[, -c(1, 2)]))
+rownames(counts)
+colnames(counts)
+
+dim(counts)
+
+col_data <- DataFrame(Condition = datos$Muscle.loss, row.names = datos$Patient.ID)
+col_data
+
+rowRanges <- GRanges(
+  seqnames = Rle("metabolite"),  # Identificación genérica de tipo
+  ranges = IRanges(start = 1:nrow(counts), width = 1),  # Índice único para cada metabolito
+  feature_id = rownames(counts)  # Usamos el nombre de cada metabolito
+)
+
+se <- SummarizedExperiment(assays = list(counts = counts),
+                           colData = col_data, rowRanges = rowRanges)
+se
+
+rowRanges(se)
+# Guardar el objeto en formato binario .Rda
+save(se, file = "human_cachexia_se.Rda")
+
+
+
+```
+
+
