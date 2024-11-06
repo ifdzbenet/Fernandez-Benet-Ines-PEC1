@@ -1,0 +1,120 @@
+---
+title: "Código R para PEC1 - ADO"
+author: "Inés Elena Fernández Benet"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+# Documento RMarkdown con el código en R
+
+Comenzamos el análisis abriendo los datos. Hemos escogido el dataset sobre Caquexia Humana, del repositorio ofrecido por el profesor Alex Sanchez Pla.
+
+```{r}
+
+datos <- read.csv("human_cachexia.csv")
+head(datos)
+
+```
+
+Ahora creamos el contenedor SummarizedExperiment para contener los datos escogidos. Utilizaremos la librería POMA, que hace el proceso de crear el objeto SummarizedExperiment mucho más fácil.
+
+```{r}
+#BiocManager::install("POMA")
+library(POMA)
+
+#primero convertimos nuestra variable Muscle.loss en factor
+datos$Muscle.loss <- as.factor(datos$Muscle.loss)
+
+#target recoge la información "descriptiva", es decir, Patient.ID y Muscle.loss
+target <- data.frame(
+  Patient_ID = datos$Patient.ID,
+  Condition = datos$Muscle.loss)
+
+#features recoge la información sobre los metabolitos
+features <- as.data.frame(datos[, -c(1, 2)])
+
+
+#rowRanges <- GRanges(
+#  seqnames = Rle("metabolite"),
+#  ranges = IRanges(start = 1:nrow(counts), width = 1),  
+#  feature_id = rownames(counts) 
+#)
+
+se <- PomaSummarizedExperiment(target = target, features = features)
+se
+
+#guardamos el objeto en formato binario para subirlo nuestro repositorio de GitHub
+save(se, file = "human_cachexia_se.Rda")
+
+```
+
+Ahora que tenemos el contenedor/objeto, procedemos a hacer algunos análisis sobre la información.
+
+Comenzamos con la exploración de los datos del conjunto de datos human_cachexia.
+
+```{r}
+
+#comenzaremos estudiando si hay valores faltantes
+missing_values <- sum(is.na(datos))
+cat("Número de valores faltantes:", missing_values, "\n")
+
+#debido a que es un conjunto de datos con poca información,
+#haremos un resumen de estadística descriptiva rápido son la función summary()
+summary(datos)
+
+
+```
+
+Dado que contamos con 63 columnas de metabolitos, y un factor de dos niveles (Muscle.loss), saltamos directamente a los análisis avanzados.
+
+Comenzamos con el análisis de las Componentes Principales (PCA)
+
+```{r}
+
+
+#para el análisis PCA, primero separamos la informacion de los metabolitos de Patient.ID y Muscle.loss
+pca_datos <- datos[, -c(1, 2)]
+
+#calculamos el PCA usando la función prcom()
+pca_resultado <- prcomp(pca_datos, scale = TRUE)
+
+#hacemos un gráfico que muestre el resultado
+plot(pca_resultado$x[, 1], 
+pca_resultado$x[, 2],
+     col = datos$Muscle.loss,
+     xlab = "PC1", ylab = "PC2",
+     main = "PCA de Metabolitos")
+legend("topright", legend = levels(datos$Muscle.loss),
+       col = 1:length(levels(datos$Muscle.loss)), pch = 1)
+
+```
+
+Ahora, seguimos con el análisis de varianza, ANOVA. Dado que contamos con 63 metabolitos, haremos un bucle que itere por todos los metabolitos y haga análisis de ANOVA, y nos quedaremos con aquellos que resulten significativamente diferentes.
+
+```{r}
+
+#de nuevo, separamos los metabolitos de patient.id y muscle.loss
+metabolitos <- as.matrix(datos[, -c(1, 2)])
+significativos <- c()
+
+#creamos el bucle
+for (metabolito in colnames(metabolitos)) {  
+  anova_resultado <- aov(datos[[metabolito]] ~ datos$Muscle.loss)
+  p_valor <- summary(anova_resultado)[[1]][["Pr(>F)"]][1]  
+  if (p_valor <= 0.05) {
+    significativos <- c(significativos, metabolito)
+  }
+  
+}
+
+print(significativos)
+
+```
+
+A través del análisis de PCA, podemos ver que los sujetos con conidicón control tienden a estar agrupados en la misma zona, con excepciones. Sin embargo, aquellos sujetos con condición de caquexia, tienden a estar más esparcidos, con alguna superposición a aquellos controles que no están agrupados.
+
+Sobre el análisis de ANOVA, podemos ver que 40 de los 63 metabolitos de estudio muestran diferencias estadísticamente significativas cuando comparamos los resultados de las medias de los grupos de condiciones, control y caquexia. Estudios más específicos tendrían que hacerse para saber cómo estas diferencias se muestran en cada uno de los metabolitos.
+
+
+Me he basado en varias fuentes para desarrollar el código que da respuesta a estos ejercicios:
+ - 
