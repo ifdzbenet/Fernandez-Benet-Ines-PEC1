@@ -22,6 +22,7 @@ output: pdf_document
  - Análisis de Varianza (ANOVA)
 6. Discusión, Limitaciones y Conclusiones
 7. Referencias 
+8. Enlace al repositorio de PEC1
 
 
 # 2. Resumen Ejecutivo
@@ -113,3 +114,7 @@ Este estudio proporciona una exploración preliminar y básico de un conjunto de
 
 - Morgan, M., Obenchain, V., Hester, J., Pagès, H. (2023). SummarizedExperiment for Coordinating Experimental Assays, Samples, and Regions of Interest. Acceso a través del enlace: https://bioconductor.org/packages/release/bioc/vignettes/SummarizedExperiment/inst/doc/SummarizedExperiment.html
 
+
+# 8. Enlace al repositorio de PEC1
+
+El enlace a mi repositorio donde encontrarás todos los documentos y archivos pedidos es: https://github.com/ifdzbenet/Fernandez-Benet-Ines-PEC1
