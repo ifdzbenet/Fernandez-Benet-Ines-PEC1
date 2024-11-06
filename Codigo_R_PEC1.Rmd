@@ -45,6 +45,9 @@ se
 
 #guardamos el objeto en formato binario para subirlo nuestro repositorio de GitHub
 save(se, file = "human_cachexia_se.Rda")
+#también aprovechamos para guardar el conjunto de datos en archivo de texto como se indica en el enunciado
+write.table(datos, file = "datos.txt", sep = "\t", row.names = FALSE, col.names = TRUE, quote = FALSE)
+
 
 ```
 
@@ -117,4 +120,19 @@ Sobre el análisis de ANOVA, podemos ver que 40 de los 63 metabolitos de estudio
 
 
 Me he basado en varias fuentes para desarrollar el código que da respuesta a estos ejercicios:
- - 
+
+- Sanchez, A., Carmona, F. (2024). Casos y Ejemplos de Análisis Multivariante con R. Análisis de Datos Ómicos. Universitat Oberta de Catalunya. Acceso a través del enlace: https://aspteaching.github.io/AMVCasos/
+
+- Sanchez, A. (2024). Introduction to microarray data exploration and analysis with basic R functions. Análisis de Datos Ómicos. Universitat Oberta de Catalunya. Acceso a través del enlace: https://aspteaching.github.io/Analisis_de_datos_omicos-Ejemplo_0-Microarrays/ExploreArrays.html#2_A_first_look_at_microarray_data_The_study 
+
+- Sanchez, A. (2024). Exploración multivariante de datos ómicos: Descriptivo, PCA y Clustering. Análisis de Datos Ómicos. Universitat Oberta de Catalunya.
+
+- Sanchez, A. (2024). MetaboData datasets [Repositorio en GitHub]. GitHub. https://github.com/nutrimetabolomics/metaboData/blob/main/Datasets/2024-Cachexia 
+
+- Bioconductor (2023). POMA Workflow. Análisis de Datos Ómicos. Acceso a través del enlace: https://web.archive.org/web/20240415023513/http://bioconductor.org/packages/release/bioc/vignettes/POMA/inst/doc/POMA-demo.html
+
+- Morgan, M., Obenchain, V., Hester, J., Pagès, H. (2023). SummarizedExperiment for Coordinating Experimental Assays, Samples, and Regions of Interest. Acceso a través del enlace: https://bioconductor.org/packages/release/bioc/vignettes/SummarizedExperiment/inst/doc/SummarizedExperiment.html
+
+- Morgan, M., Obenchain, V., Hester, J., Pagès, H. (2023). SummarizedExperiment for Coordinating Experimental Assays, Samples, and Regions of Interest. Acceso a través del enlace: https://bioconductor.org/packages/release/bioc/vignettes/SummarizedExperiment/inst/doc/SummarizedExperiment.html
+
+
